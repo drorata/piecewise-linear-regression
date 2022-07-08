@@ -4,9 +4,13 @@ import streamlit as st
 import plotly.express as px
 from scipy.stats import linregress
 import plotly.graph_objects as go
+from numbers import Number
+from typing import List
 
 
-def line_plot(x1, x2, slope, intercept, factor):
+def line_plot(
+    x1: Number, x2: Number, slope: Number, intercept: Number, factor: Number
+) -> List[go.Scatter]:
     y1 = x1 * slope + intercept
     y2 = x2 * slope + intercept
     line_seg = go.Scatter(
