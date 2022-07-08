@@ -30,9 +30,16 @@ def line_plot(x1, x2, slope, intercept, factor):
 Made with ⚡️ by Dror Atariah
 """
 
-NOISE = st.number_input(label="Noise level", min_value=0.0, max_value=1.0)
+POINTS_NUM = st.number_input(
+    label="Number of points on the x-axis",
+    min_value=10,
+    max_value=10000,
+    value=1000,
+    step=10,
+)
+NOISE = st.number_input(label="Noise level", min_value=0.0, max_value=1.0, value=0.0)
 
-x = np.linspace(0, 10, num=1000, endpoint=True)
+x = np.linspace(0, 10, num=POINTS_NUM, endpoint=True)
 y = np.cos(x) + np.random.uniform(low=-NOISE, high=NOISE, size=x.shape[0])
 
 df = pd.DataFrame({"x": x, "y": y})
@@ -58,9 +65,12 @@ for window in df.rolling(window=int(win_len)):
     )
 
 
+SKIP_EVERY_N = st.number_input(
+    "Skip every N segment. Select N", min_value=1, max_value=300, value=2
+)
 fig = px.line(df, x="x", y="y")
 for i, segment in enumerate(regression_data):
-    if i % 2 == 0:
+    if i % SKIP_EVERY_N == 0:
         factor = i / len(regression_data)
         try:
             traces = line_plot(segment[0], segment[1], segment[2], segment[3], factor)
