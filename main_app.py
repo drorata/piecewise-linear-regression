@@ -4,6 +4,7 @@ import streamlit as st
 import plotly.express as px
 from scipy.stats import linregress
 import plotly.graph_objects as go
+from functools import partial
 from numbers import Number
 from typing import List
 
@@ -26,6 +27,14 @@ def line_plot(
         x=(x2,), y=(y2,), mode="markers", marker={"color": "red", "opacity": 0.2}
     )
     return [line_seg, start_pt, end_pt]
+
+
+def window_lin_reg(window: pd.DataFrame, win_len: int) -> List[Number]:
+    if window.shape[0] < win_len:
+        return [None, None, None, None]
+
+    lin_reg = linregress(window["x"], window["y"])
+    return [window["x"].iloc[0], window["x"].iloc[-1], lin_reg.slope, lin_reg.intercept]
 
 
 """
@@ -57,16 +66,9 @@ win_len = st.slider(
     max_value=df.shape[0],
     value=int(df.shape[0] / 2),
 )
-regression_data = []
-for window in df.rolling(window=int(win_len)):
-    if window.shape[0] < win_len:
-        regression_data.append([None, None, None, None])
-        continue
-
-    lin_reg = linregress(window["x"], window["y"])
-    regression_data.append(
-        [window["x"].iloc[0], window["x"].iloc[-1], lin_reg.slope, lin_reg.intercept]
-    )
+regression_data = list(
+    map(partial(window_lin_reg, win_len=win_len), df.rolling(window=int(win_len)))
+)
 
 
 SKIP_EVERY_N = st.number_input(
