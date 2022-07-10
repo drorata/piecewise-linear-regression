@@ -1,9 +1,0 @@
-name: piecewise-linear-regression
-channels:
-  - conda-forge
-dependencies:
-  - python=3.10
-  - streamlit=1.10.0
-  - pandas=1.4.2
-  - plotly=5.9.0
-  - scipy=1.8.1

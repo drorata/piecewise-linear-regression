@@ -1,0 +1,14 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pandas = "==1.4.3"
+streamlit = "==1.10.0"
+plotly = "==5.9.0"
+scipy = "==1.8.1"
+[dev-packages]
+
+[requires]
+python_version = "3.10"
