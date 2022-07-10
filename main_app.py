@@ -41,8 +41,34 @@ def window_lin_reg(window: pd.DataFrame, win_len: int) -> List[Number]:
 # Playing with Piecewise-linear-regression
 
 Made with ⚡️ by Dror Atariah
+
+## Background
+
+In another project I'm working on, I had to experiment with _piecewise-linear-regression_.
+The best way to move forward in this case is to experiment.
+Here's the result of the experimentation.
+
+## Environment
+
+As I wanted to take advantage of this exercise and deploy the "experiment" using
+[Streamlit cloud](https://share.streamlit.io/),
+I had to switch from my long standing workflow (using `conda`) to `pyenv` together with `pipenv`.
+For more context,
+checkout [this thread](https://discuss.streamlit.io/t/failing-to-build-a-streamlit-cloud-app/27494/2?u=drorata).
+Switching to the new setup was relatively smooth.
+I might stick to it.
+
+## Flow
+
+* Select the min/max ranges of the x-axis
 """
 
+X_MIN = st.number_input(
+    label="Min of x-axis", min_value=-10.0, max_value=0.0, value=0.0, step=0.1,
+)
+X_MAX = st.number_input(
+    label="Max of x-axis", min_value=0.0, max_value=10.0, value=2 * np.pi, step=0.1,
+)
 POINTS_NUM = st.number_input(
     label="Number of points on the x-axis",
     min_value=10,
@@ -52,13 +78,19 @@ POINTS_NUM = st.number_input(
 )
 NOISE = st.number_input(label="Noise level", min_value=0.0, max_value=1.0, value=0.0)
 
-x = np.linspace(0, 10, num=POINTS_NUM, endpoint=True)
+x = np.linspace(X_MIN, X_MAX, num=POINTS_NUM, endpoint=True)
 y = np.cos(x) + np.random.uniform(low=-NOISE, high=NOISE, size=x.shape[0])
 
 df = pd.DataFrame({"x": x, "y": y})
 fig = px.line(df, x="x", y="y")
 st.plotly_chart(fig, use_container_width=True)
 
+"""
+At this point, `df` holds a function (currently hardcoded).
+See 👆🏻.
+
+Next, you can select the width of the rolling window that will be used to compute the linear regressions.
+"""
 
 win_len = st.slider(
     label="Window's width",
@@ -70,10 +102,17 @@ regression_data = list(
     map(partial(window_lin_reg, win_len=win_len), df.rolling(window=int(win_len)))
 )
 
-
+"""
+For the sake of nicer visualizations, you might want to skip every n-regression.
+"""
 SKIP_EVERY_N = st.number_input(
     "Skip every N segment. Select N", min_value=1, max_value=300, value=2
 )
+
+"""
+We're ready to plot the result.
+The colors of the lines are changing as with every new regression.
+"""
 fig = px.line(df, x="x", y="y")
 for i, segment in enumerate(regression_data):
     if i % SKIP_EVERY_N == 0:
@@ -86,3 +125,8 @@ for i, segment in enumerate(regression_data):
             pass
 fig.update_layout(showlegend=False)
 st.plotly_chart(fig, use_container_width=False)
+
+"""
+I strongly recommend forking this repo and playing around with various functions.
+You can get some nice looking plots! 🤓
+"""
