@@ -40,7 +40,7 @@ def window_lin_reg(window: pd.DataFrame, win_len: int) -> List[Number]:
 """
 # Playing with Piecewise-linear-regression
 
-Made with ⚡️ by Dror Atariah
+Made with ⚡️ by Dror Atariah ([🖇-In](https://www.linkedin.com/in/atariah/) / [🕸](http://drorata.github.io/))
 
 ## Background
 
@@ -127,6 +127,12 @@ fig.update_layout(showlegend=False)
 st.plotly_chart(fig, use_container_width=False)
 
 """
-I strongly recommend forking this repo and playing around with various functions.
+If you want to try out other functions, you would have to fork
+[this repo](https://github.com/drorata/piecewise-linear-regression) and playing around with various functions.
 You can get some nice looking plots! 🤓
+
+For example:
 """
+
+st.image("./example_1.jpeg")
+st.image("./example_2.jpeg")
